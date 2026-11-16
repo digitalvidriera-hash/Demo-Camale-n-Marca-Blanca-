@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title id="page-title">Catálogo Oficial | Tienda Online</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-main: #f3f4f6;
+      --bg-card: #ffffff;
+      --bg-header: rgba(255, 255, 255, 0.95);
+      --bg-topbar: #18181b;
+      --text-topbar: #f4f4f5;
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --border-color: #e5e7eb;
+      --accent: #18181b;
+      --accent-text: #ffffff;
+      --badge-bg: #f3f4f6;
+      --badge-text: #374151;
+      --font-heading: 'Montserrat', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    /* TEMA 1: GRIS PASTEL MINIMALISTA (Por defecto) */
+    body.theme-pastel {
+      --bg-main: #eef0f3;
+      --bg-card: #ffffff;
+      --bg-header: rgba(248, 249, 250, 0.95);
+      --bg-topbar: #27272a;
+      --text-topbar: #f4f4f5;
+      --text-main: #18181b;
+      --text-muted: #71717a;
+      --border-color: #e4e4e7;
+      --accent: #27272a;
+      --accent-text: #ffffff;
+      --badge-bg: #f4f4f5;
+      --badge-text: #3f3f46;
+      --font-heading: 'Montserrat', sans-serif;
+    }
+
+    /* TEMA 2: OSCURO URBANO / STREETWEAR */
+    body.theme-urbano {
+      --bg-main: #0c0d10;
+      --bg-card: #16181d;
+      --bg-header: rgba(18, 20, 26, 0.95);
+      --bg-topbar: #ffffff;
+      --text-topbar: #09090b;
+      --text-main: #f4f4f5;
+      --text-muted: #9ca3af;
+      --border-color: #272a34;
+      --accent: #f4f4f5;
+      --accent-text: #09090b;
+      --badge-bg: #22252e;
+      --badge-text: #e4e4e7;
+      --font-heading: 'Montserrat', sans-serif;
+    }
+
+    /* TEMA 3: BOUTIQUE / MODA FEMENINA */
+    body.theme-boutique {
+      --bg-main: #faf7f2;
+      --bg-card: #ffffff;
+      --bg-header: rgba(250, 247, 242, 0.95);
+      --bg-topbar: #443730;
+      --text-topbar: #fdfbf7;
+      --text-main: #29221e;
+      --text-muted: #786b63;
+      --border-color: #ece4da;
+      --accent: #6e5244;
+      --accent-text: #ffffff;
+      --badge-bg: #f5efe8;
+      --badge-text: #57443a;
+      --font-heading: 'Playfair Display', serif;
+    }
+
+    /* TEMA 4: DEPORTIVO / TRAINING */
+    body.theme-deportivo {
+      --bg-main: #f1f5f9;
+      --bg-card: #ffffff;
+      --bg-header: rgba(15, 23, 42, 0.98);
+      --bg-topbar: #10b981;
+      --text-topbar: #064e3b;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --accent: #0f172a;
+      --accent-text: #10b981;
+      --badge-bg: #ecfdf5;
+      --badge-text: #047857;
+      --font-heading: 'Montserrat', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    .font-heading { font-family: var(--font-heading); }
+    .theme-card { background-color: var(--bg-card); border-color: var(--border-color); }
+    .theme-header { background-color: var(--bg-header); border-color: var(--border-color); }
+    .theme-topbar { background-color: var(--bg-topbar); color: var(--text-topbar); }
+    .theme-accent { background-color: var(--accent); color: var(--accent-text); }
+    .theme-border { border-color: var(--border-color); }
+    .theme-muted { color: var(--text-muted); }
+    .theme-badge { background-color: var(--badge-bg); color: var(--badge-text); }
+
+    /* Corrección específica para header oscuro en tema deportivo */
+    body.theme-deportivo header { color: #f8fafc; }
+    body.theme-deportivo header .theme-muted { color: #94a3b8; }
+
+    /* Ocultar barra de scroll en carrusel de categorías */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Marca de agua a 3/4 de escala */
+    .watermark-overlay {
+      pointer-events: none;
+      user-select: none;
+      width: 75%;
+      height: 75%;
+    }
+  </style>
+</head>
+<body class="theme-pastel min-h-screen flex flex-col">
+
+  <!-- BARRA SUPERIOR DE UBICACIÓN Y HORARIOS -->
+  <div class="theme-topbar text-xs py-2 px-3 text-center font-medium tracking-wide">
+    <a id="store-map-link" href="https://maps.google.com" target="_blank" class="hover:underline inline-flex items-center gap-1.5 justify-center">
+      <span id="store-address-text">📍 Av. Alem 450, Bahía Blanca | Lun. a Sáb. 9:30 a 20:00 hs</span>
+      <span class="underline opacity-80 hidden sm:inline">(Ver ubicación)</span>
+    </a>
+  </div>
+
+  <!-- HEADER PRINCIPAL -->
+  <header class="theme-header sticky top-0 z-30 backdrop-blur-md border-b">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-3 flex items-center justify-between gap-2">
+      <!-- Logo + Nombre -->
+      <a href="#" onclick="resetFilters(); return false;" class="flex items-center gap-3 min-w-0">
+        <div id="store-logo-container" class="w-11 h-11 sm:w-12 sm:h-12 rounded-full overflow-hidden flex-shrink-0 flex items-center justify-center font-heading font-extrabold text-lg border theme-border theme-accent shadow-sm">
+          <span id="store-initials">TD</span>
+          <img id="store-logo-img" src="" alt="Logo" class="w-full h-full object-cover hidden" />
+        </div>
+        <div class="truncate">
+          <h1 id="store-name" class="font-heading font-extrabold text-base sm:text-xl tracking-tight truncate">TIENDA DEMO</h1>
+          <p id="store-slogan" class="text-[11px] sm:text-xs theme-muted truncate">Catálogo Online — Pedidos por WhatsApp</p>
+        </div>
+      </a>
+
+      <!-- Redes + Botón Carrito -->
+      <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+        <a id="store-ig-link" href="https://instagram.com" target="_blank" title="Instagram" class="w-9 h-9 rounded-full border theme-border flex items-center justify-center hover:opacity-80 transition">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </a>
+
+        <button onclick="toggleCart(true)" class="theme-accent px-3.5 py-2 rounded-full text-xs sm:text-sm font-bold flex items-center gap-2 shadow-sm hover:opacity-90 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+          <span class="hidden sm:inline">Mi Pedido</span>
+          <span id="cart-count" class="px-1.5 py-0.5 text-[11px] rounded-full bg-black/20 font-extrabold">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTROLES: BUSCADOR, ORDEN Y CATEGORÍAS -->
+  <section class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-4 pb-2 space-y-3">
+    <div class="flex flex-col sm:flex-row gap-2.5">
+      <!-- Botón Menú Categorías Mobile + Buscador -->
+      <div class="flex gap-2 flex-1">
+        <button onclick="toggleCategoryDrawer(true)" class="sm:hidden theme-card border px-3.5 py-2.5 rounded-xl flex items-center gap-1.5 text-xs font-semibold shadow-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7"/></svg>
+          <span>Rubros</span>
+        </button>
+
+        <div class="relative flex-1">
+          <input
+            id="search-input"
+            type="text"
+            oninput="renderCatalog()"
+            placeholder="Buscar por prenda, color o código..."
+            class="w-full theme-card border rounded-xl pl-9 pr-8 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-400"
+          />
+          <svg class="w-4 h-4 theme-muted absolute left-3 top-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </div>
+      </div>
+
+      <!-- Ordenamiento + Estado de Stock -->
+      <div class="flex items-center justify-between sm:justify-end gap-2">
+        <div class="text-[11px] theme-muted flex items-center gap-1.5 px-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span id="status-indicator">Stock actualizado en tiempo real</span>
+        </div>
+
+        <select id="sort-select" onchange="renderCatalog()" class="theme-card border rounded-xl px-3 py-2.5 text-xs sm:text-sm font-medium focus:outline-none">
+          <option value="featured">Destacados / Nuevos</option>
+          <option value="price-asc">Menor precio</option>
+          <option value="price-desc">Mayor precio</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Barra horizontal de Categorías -->
+    <div id="category-pills" class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1"></div>
+  </section>
+
+  <!-- DRAWER LATERAL DE CATEGORÍAS (CELULARES) -->
+  <div id="cat-drawer-backdrop" onclick="toggleCategoryDrawer(false)" class="fixed inset-0 bg-black/60 z-40 hidden"></div>
+  <aside id="cat-drawer" class="fixed top-0 left-0 bottom-0 w-72 theme-card border-r z-50 transform -translate-x-full transition-transform duration-300 flex flex-col">
+    <div class="p-4 border-b theme-border flex items-center justify-between">
+      <span class="font-heading font-bold text-base">Categorías</span>
+      <button onclick="toggleCategoryDrawer(false)" class="p-1.5 rounded-lg border theme-border text-xs font-bold">✕ Cerrar</button>
+    </div>
+    <div id="drawer-category-list" class="p-3 space-y-1.5 overflow-y-auto flex-1"></div>
+  </aside>
+
+  <!-- GRILLA PRINCIPAL DE PRODUCTOS -->
+  <main class="max-w-7xl mx-auto w-full px-3 sm:px-6 py-4 flex-1">
+    <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5"></div>
+  </main>
+
+  <!-- NOTIFICACIÓN TOAST AL AGREGAR PRODUCTO (SIN ABRIR EL CARRITO SOLO) -->
+  <div id="toast-notification" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-40 bg-emerald-600 text-white px-4 py-2.5 rounded-full shadow-xl text-xs sm:text-sm font-bold flex items-center gap-2.5 transition-all duration-300 opacity-0 pointer-events-none">
+    <span>✓ Prenda sumada al pedido</span>
+    <button onclick="toggleCart(true)" class="underline font-extrabold bg-white/20 px-2 py-0.5 rounded-full">Ver carrito</button>
+  </div>
+
+  <!-- BARRA FLOTANTE MODO DEMO INTERACTIVA (OPCIONAL PARA EL CLIENTE) -->
+  <div id="demo-switcher-bar" class="fixed bottom-3 left-3 z-30 theme-card border shadow-xl rounded-2xl p-2 flex items-center gap-1.5 text-[11px]">
+    <span class="font-bold px-2 hidden sm:inline">🎨 Estilo:</span>
+    <button onclick="setLiveTheme('pastel')" class="px-2.5 py-1 rounded-lg border theme-border font-semibold hover:opacity-80">Pastel</button>
+    <button onclick="setLiveTheme('urbano')" class="px-2.5 py-1 rounded-lg bg-zinc-900 text-white font-semibold hover:opacity-80">Urbano</button>
+    <button onclick="setLiveTheme('boutique')" class="px-2.5 py-1 rounded-lg bg-[#6e5244] text-white font-semibold hover:opacity-80">Boutique</button>
+    <button onclick="setLiveTheme('deportivo')" class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white font-semibold hover:opacity-80">Sport</button>
+  </div>
+
+  <!-- BOTÓN FLOTANTE DE WHATSAPP DIRECTO -->
+  <div class="fixed bottom-3 right-3 z-30">
+    <a id="floating-wa-btn" href="#" target="_blank" class="bg-[#25D366] text-white px-4 py-2.5 rounded-full shadow-lg font-bold text-xs sm:text-sm flex items-center gap-2 hover:scale-105 transition">
+      <span>💬 Consultar</span>
+    </a>
+  </div>
+
+  <!-- VISOR DE IMAGEN AMPLIADA (LIGHTBOX CON MARCA DE AGUA 3/4) -->
+  <div id="lightbox-modal" onclick="closeLightbox()" class="fixed inset-0 bg-black/90 z-50 hidden items-center justify-center p-4">
+    <div class="relative max-w-lg w-full max-h-[85vh] flex items-center justify-center" onclick="event.stopPropagation()">
+      <button onclick="closeLightbox()" class="absolute -top-10 right-0 text-white bg-white/20 px-3 py-1 rounded-full text-xs font-bold">✕ Cerrar vista</button>
+      <div class="relative w-full overflow-hidden rounded-2xl bg-zinc-900 flex items-center justify-center">
+        <img id="lightbox-img" src="" alt="Prenda ampliada" class="w-full max-h-[80vh] object-contain" />
+        <!-- Marca de agua 3/4 en zoom -->
+        <div id="lightbox-watermark" class="watermark-overlay absolute inset-0 m-auto flex items-center justify-center"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DRAWER DEL CARRITO DE COMPRAS -->
+  <div id="cart-backdrop" onclick="toggleCart(false)" class="fixed inset-0 bg-black/60 z-40 hidden"></div>
+  <div id="cart-drawer" class="fixed top-0 right-0 bottom-0 w-full max-w-md theme-card border-l z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
+    <!-- Encabezado del carrito con botón VOLVER AL CATÁLOGO -->
+    <div class="p-4 border-b theme-border flex items-center justify-between gap-2">
+      <button onclick="toggleCart(false)" class="px-3 py-1.5 rounded-xl border theme-border text-xs font-extrabold flex items-center gap-1 hover:opacity-80">
+        ← VOLVER AL CATÁLOGO
+      </button>
+      <span class="font-heading font-extrabold text-sm sm:text-base">Tu Pedido</span>
+      <button onclick="clearCart()" class="text-[11px] text-red-500 font-semibold hover:underline">Vaciar</button>
+    </div>
+
+    <!-- Lista de prendas + Datos de entrega -->
+    <div class="p-4 overflow-y-auto flex-1 space-y-5">
+      <div id="cart-items-container" class="space-y-3"></div>
+
+      <div class="border-t theme-border pt-4 space-y-3">
+        <h3 class="font-heading font-bold text-xs uppercase tracking-wider theme-muted">Datos de Entrega y Pago</h3>
+
+        <div>
+          <label class="text-xs font-semibold block mb-1">Modalidad de entrega</label>
+          <select id="delivery-method" onchange="toggleAddressField()" class="w-full theme-card border rounded-xl px-3 py-2 text-sm">
+            <option id="opt-pickup" value="Retiro en Local">Retiro en Local</option>
+            <option value="Envío a Domicilio (Cadetería Local)">Envío a Domicilio (Cadetería Local)</option>
+            <option value="Envío al Interior / Correo">Envío a todo el país</option>
+          </select>
+        </div>
+
+        <div id="buyer-address-box" class="hidden">
+          <label class="text-xs font-semibold block mb-1">Dirección de entrega / Localidad</label>
+          <input id="buyer-address" type="text" placeholder="Calle, número y piso / Ciudad" class="w-full theme-card border rounded-xl px-3 py-2 text-sm" />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div>
+            <label class="text-xs font-semibold block mb-1">Tu Nombre</label>
+            <input id="buyer-name" type="text" placeholder="Ej: Martina" class="w-full theme-card border rounded-xl px-3 py-2 text-sm" />
+          </div>
+          <div>
+            <label class="text-xs font-semibold block mb-1">Medio de Pago</label>
+            <select id="buyer-payment" class="w-full theme-card border rounded-xl px-3 py-2 text-sm">
+              <option value="Transferencia / Alias">Transferencia / Alias</option>
+              <option value="Efectivo en el local">Efectivo</option>
+              <option value="Tarjeta / Cuotas">Tarjeta / Link de Pago</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pie de carrito -->
+    <div class="p-4 border-t theme-border space-y-2.5">
+      <div class="flex items-center justify-between text-base font-extrabold">
+        <span>Total Estimado:</span>
+        <span id="cart-total">$0 ARS</span>
+      </div>
+      <button onclick="sendOrderWhatsApp()" class="w-full bg-[#25D366] text-white py-3 rounded-xl font-extrabold text-sm shadow-md hover:opacity-95 transition flex items-center justify-center gap-2">
+        <span>📲 ENVIAR PEDIDO POR WHATSAPP</span>
+      </button>
+      <button onclick="toggleCart(false)" class="w-full py-2 rounded-xl border theme-border text-xs font-bold">
+        Seguir mirando prendas
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL OCULTO: GENERADOR DE DEMOS PARA CLIENTES (?armar=1) -->
+  <div id="builder-modal" class="fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-3 overflow-y-auto">
+    <div class="bg-zinc-900 text-zinc-100 border border-zinc-700 rounded-2xl max-w-xl w-full p-5 space-y-4 my-8 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+        <div>
+          <span class="text-[11px] uppercase tracking-widest text-emerald-400 font-bold">Modo Vendedor Privado</span>
+          <h2 class="text-lg font-extrabold">⚡ Generador de Demo Personalizada</h2>
+        </div>
+        <button onclick="toggleBuilder(false)" class="text-xs bg-zinc-800 px-3 py-1.5 rounded-lg font-bold hover:bg-zinc-700">Cerrar ✕</button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+        <div>
+          <label class="block font-bold mb-1 text-zinc-300">Nombre del Comercio *</label>
+          <input id="gen-nombre" type="text" placeholder="Ej: Mora Showroom" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white" />
+        </div>
+        <div>
+          <label class="block font-bold mb-1 text-zinc-300">Subtítulo / Eslogan</label>
+          <input id="gen-slogan" type="text" placeholder="Ej: Indumentaria Femenina & Accesorios" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white" />
+        </div>
+
+        <div>
+          <label class="block font-bold mb-1 text-zinc-300">Estilo Visual (Tema)</label>
+          <select id="gen-tema" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white">
+            <option value="pastel">Gris Pastel Minimalista (Claro)</option>
+            <option value="urbano">Oscuro Urbano / Streetwear</option>
+            <option value="boutique">Boutique / Cálido Femenino</option>
+            <option value="deportivo">Deportivo / Fitness</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold mb-1 text-zinc-300">Pack de Ropa de Muestra</label>
+          <select id="gen-rubro" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white">
+            <option value="todos">Mixto Completo (Todos los rubros)</option>
+            <option value="urbano">Solo Urbano / Streetwear / Unisex</option>
+            <option value="boutique">Solo Boutique / Moda Mujer</option>
+            <option value="deportivo">Solo Ropa Deportiva / Training</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold mb-1 text-zinc-300">WhatsApp para recibir prueba</label>
+          <input id="gen-wa" type="text" placeholder="Ej: 5492914359867" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white" />
+        </div>
+
+        <div>
+          <label class="block font-bold mb-1 text-zinc-300">Instagram (sin @)</label>
+          <input id="gen-ig" type="text" placeholder="Ej: morashowroom.bb" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white" />
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class="block font-bold mb-1 text-zinc-300">Dirección y Horarios</label>
+          <input id="gen-dir" type="text" placeholder="Ej: 📍 Soler 320, Bahía Blanca | Lun a Sáb 10 a 20hs" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white" />
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class="block font-bold mb-1 text-zinc-300">URL de Logo (ImgBB / Instagram) — Opcional</label>
+          <input id="gen-logo" type="text" placeholder="Dejar vacío para usar iniciales y sello tipográfico automático" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white" />
+        </div>
+
+        <div class="sm:col-span-2 flex items-center justify-between bg-zinc-800/70 p-2.5 rounded-lg border border-zinc-700">
+          <span>Mostrar botonera de cambio de color al cliente</span>
+          <input id="gen-barra" type="checkbox" checked class="w-4 h-4 accent-emerald-500" />
+        </div>
+      </div>
+
+      <!-- Resultado del Link -->
+      <div class="bg-zinc-950 p-3 rounded-xl border border-zinc-800 space-y-2">
+        <div class="text-[11px] text-zinc-400 font-semibold">Link personalizado listo para enviar:</div>
+        <input id="gen-result-url" type="text" readonly class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-2.5 py-1.5 text-xs text-emerald-400 font-mono" />
+      </div>
+
+      <div class="flex flex-wrap gap-2 pt-1">
+        <button onclick="applyAndCopyDemoLink()" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-zinc-950 font-extrabold py-2.5 px-4 rounded-xl text-xs transition">
+          📋 Copiar Link de Cliente
+        </button>
+        <button onclick="previewFromBuilder()" class="bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition">
+          👁️ Previsualizar acá
+        </button>
+        <button onclick="sendPitchWhatsApp()" class="bg-[#25D366] text-zinc-950 font-extrabold py-2.5 px-4 rounded-xl text-xs transition">
+          💬 Mandar Propuesta WA
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER CON ACCESO SECRETO AL PANEL VENDEDOR -->
+  <footer class="border-t theme-border mt-10 py-6 px-4 text-center text-xs theme-muted">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p>© <span id="footer-store-name" class="font-bold">TIENDA DEMO</span> — Catálogo Digital Interactivo</p>
+      <button onclick="toggleBuilder(true)" class="opacity-40 hover:opacity-100 transition text-[11px] underline">
+        ⚡ Configurar Demo
+      </button>
+    </div>
+  </footer>
+
+  <script>
+    // =========================================================================
+    // 1. CONFIGURACIÓN POR DEFECTO Y PARÁMETROS CAMALEÓN (URL)
+    // =========================================================================
+    // Si querés conectar un Google Sheets propio más adelante, pegá el ID acá:
+    const OPTIONAL_GOOGLE_SHEET_ID = ""; 
+
+    const params = new URLSearchParams(window.location.search);
+    const STORE_CONFIG = {
+      nombre: params.get('nombre') || 'URBAN STUDIO',
+      slogan: params.get('slogan') || 'Catálogo Oficial — Pedidos Mayoristas y Minoristas',
+      tema: params.get('tema') || 'pastel', // pastel | urbano | boutique | deportivo
+      rubro: params.get('rubro') || 'todos', // todos | urbano | boutique | deportivo
+      wa: (params.get('wa') || '5492914359867').replace(/\D/g, ''),
+      ig: (params.get('ig') || 'judaindumentaria1').replace('@', ''),
+      dir: params.get('dir') || '📍 Centro, Bahía Blanca | Lun. a Sáb. 10:00 a 20:00 hs',
+      logo: params.get('logo') || '',
+      barra: params.get('barra') !== '0'
+    };
+
+    // =========================================================================
+    // 2. BASE DE PRODUCTOS DE MUESTRA POR RUBRO (FUNCIONA SIN CONFIGURAR NADA)
+    // =========================================================================
+    const DEMO_PRODUCTS = [
+      // PACK URBANO / STREETWEAR
+      { id: 'U1', rubro: 'urbano', categoria: 'Hoodies & Buzos', nombre: 'Hoodie Oversize Heavyweight', precio: 42000, talles: ['S', 'M', 'L', 'XL'], colores: ['Negro Lavado', 'Gris Melange', 'Crudo'], img: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=800&q=80', nuevo: true },
+      { id: 'U2', rubro: 'urbano', categoria: 'Pantalones', nombre: 'Pantalón Cargo Parachute Ripstop', precio: 48500, talles: ['38', '40', '42', '44'], colores: ['Negro', 'Verde Militar', 'Arena'], img: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=800&q=80', nuevo: true },
+      { id: 'U3', rubro: 'urbano', categoria: 'Remeras', nombre: 'Remera Boxy Fit Algodón Peinado 24/1', precio: 22900, talles: ['S', 'M', 'L', 'XL'], colores: ['Blanco', 'Negro', 'Gris Topo'], img: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80', nuevo: false },
+      { id: 'U4', rubro: 'urbano', categoria: 'Camperas', nombre: 'Campera Puffer Engomada Importada', precio: 79000, talles: ['M', 'L', 'XL'], colores: ['Negro Mate', 'Grafito'], img: 'https://images.unsplash.com/photo-1544923246-77307dd654cb?auto=format&fit=crop&w=800&q=80', nuevo: true },
+      { id: 'U5', rubro: 'urbano', categoria: 'Chalecos', nombre: 'Chaleco Puffer Matelaseado Unisex', precio: 54000, talles: ['S', 'M', 'L', 'XL'], colores: ['Negro', 'Hueso'], img: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=800&q=80', nuevo: false },
+      { id: 'U6', rubro: 'urbano', categoria: 'Bermudas & Shorts', nombre: 'Bermuda Denim Baggy Carpenter', precio: 39500, talles: ['38', '40', '42', '44'], colores: ['Azul Óxido', 'Negro'], img: 'https://images.unsplash.com/photo-1565084888279-aca607ecce0c?auto=format&fit=crop&w=800&q=80', nuevo: false },
+
+      // PACK BOUTIQUE / MODA FEMENINA
+      { id: 'B1', rubro: 'boutique', categoria: 'Blazers & Sacos', nombre: 'Blazer Sastrero Lino Entallado', precio: 64000, talles: ['S', 'M', 'L'], colores: ['Beige Arena', 'Blanco Off', 'Negro'], img: 'https://images.unsplash.com/photo-1591369822096-ffd140ec948f?auto=format&fit=crop&w=800&q=80', nuevo: true },
+      { id: 'B2', rubro: 'boutique', categoria: 'Pantalones', nombre: 'Jean Wide Leg Tiro Alto Rígido', precio: 46000, talles: ['36', '38', '40', '42'], colores: ['Celeste Nevado', 'Azul Clásico'], img: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=800&q=80', nuevo: true },
+      { id: 'B3', rubro: 'boutique', categoria: 'Sweaters & Tejidos', nombre: 'Sweater Tejido Bremer Cuello Redondo', precio: 34500, talles: ['Único'], colores: ['Vison', 'Crudo', 'Rosa Viejo'], img: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&w=800&q=80', nuevo: false },
+      { id: 'B4', rubro: 'boutique', categoria: 'Vestidos & Monos', nombre: 'Vestido Midi Satinado Breteles Finos', precio: 52000, talles: ['S', 'M', 'L'], colores: ['Champagne', 'Negro', 'Terracota'], img: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=800&q=80', nuevo: true },
+      { id: 'B5', rubro: 'boutique', categoria: 'Camisas & Tops', nombre: 'Camisa Oversize Poplin Premium', precio: 36900, talles: ['S/M', 'L/XL'], colores: ['Blanco', 'Celeste Rayado'], img: 'https://images.unsplash.com/photo-1598554747436-c9293d6a588f?auto=format&fit=crop&w=800&q=80', nuevo: false },
+      { id: 'B6', rubro: 'boutique', categoria: 'Camperas', nombre: 'Trench Coat Impermeable Con Lazo', precio: 84000, talles: ['S', 'M', 'L'], colores: ['Camel', 'Negro'], img: 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?auto=format&fit=crop&w=800&q=80', nuevo: true },
+
+      // PACK DEPORTIVO / TRAINING
+      { id: 'D1', rubro: 'deportivo', categoria: 'Camperas Deportivas', nombre: 'Campera Rompeviento Running Ultraliviana', precio: 49900, talles: ['S', 'M', 'L', 'XL'], colores: ['Negro/Reflectivo', 'Azul Marino'], img: 'https://images.unsplash.com/photo-1556906781-9a412961c28c?auto=format&fit=crop&w=800&q=80', nuevo: true },
+      { id: 'D2', rubro: 'deportivo', categoria: 'Conjuntos & Calzas', nombre: 'Calza Deportiva Seamless Push Up', precio: 31500, talles: ['S', 'M', 'L'], colores: ['Gris Grafito', 'Negro', 'Verde Petróleo'], img: 'https://images.unsplash.com/photo-1506629082955-511b1aa562c8?auto=format&fit=crop&w=800&q=80', nuevo: true },
+      { id: 'D3', rubro: 'deportivo', categoria: 'Shorts', nombre: 'Short Deportivo Con Calza Interna 2 en 1', precio: 26500, talles: ['M', 'L', 'XL', 'XXL'], colores: ['Negro', 'Gris Oscuro'], img: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80', nuevo: false },
+      { id: 'D4', rubro: 'deportivo', categoria: 'Musculosas & Remeras', nombre: 'Remera Dry-Fit Entrenamiento Respirable', precio: 21900, talles: ['S', 'M', 'L', 'XL'], colores: ['Negro', 'Verde Fluo', 'Blanco'], img: 'https://images.unsplash.com/photo-1581655353564-df123a1eb820?auto=format&fit=crop&w=800&q=80', nuevo: false },
+      { id: 'D5', rubro: 'deportivo', categoria: 'Pantalones', nombre: 'Jogger Deportivo Chupín Con Cierre', precio: 37900, talles: ['S', 'M', 'L', 'XL'], colores: ['Negro', 'Azul Noche'], img: 'https://images.unsplash.com/photo-1552902865-b72c031ac5ea?auto=format&fit=crop&w=800&q=80', nuevo: true },
+      { id: 'D6', rubro: 'deportivo', categoria: 'Camisetas', nombre: 'Buzo Medio Cierre Térmico Microfibra', precio: 43000, talles: ['M', 'L', 'XL'], colores: ['Negro', 'Gris Plata'], img: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=800&q=80', nuevo: false }
+    ];
+
+    let activeCategory = 'Todas';
+    let selectedVariants = {}; // Guarda talle y color elegido por tarjeta
+    let cart = [];
+
+    // Clave única de carrito por comercio para que distintas demos no mezclen productos
+    function getCartStorageKey() {
+      return 'catalogo_demo_cart_' + STORE_CONFIG.nombre.toLowerCase().replace(/\s+/g, '_');
+    }
+
+    // =========================================================================
+    // 3. INICIALIZACIÓN Y APLICACIÓN DE IDENTIDAD VISUAL
+    // =========================================================================
+    function initApp() {
+      applyStoreBranding();
+      loadCartFromStorage();
+      renderCategories();
+      renderCatalog();
+
+      // Abrir el panel vendedor automáticamente si entra con ?armar=1 o ?panel=1
+      if (params.get('armar') === '1' || params.get('panel') === '1') {
+        toggleBuilder(true);
+      }
+    }
+
+    function applyStoreBranding() {
+      // Aplicar clase de tema al body
+      document.body.className = `theme-${STORE_CONFIG.tema} min-h-screen flex flex-col`;
+
+      // Títulos y textos
+      document.getElementById('page-title').textContent = `${STORE_CONFIG.nombre} | Catálogo Oficial`;
+      document.getElementById('store-name').textContent = STORE_CONFIG.nombre;
+      document.getElementById('footer-store-name').textContent = STORE_CONFIG.nombre;
+      document.getElementById('store-slogan').textContent = STORE_CONFIG.slogan;
+      document.getElementById('store-address-text').textContent = STORE_CONFIG.dir;
+      document.getElementById('opt-pickup').value = `Retiro en Local (${STORE_CONFIG.dir.replace('📍', '').trim()})`;
+      document.getElementById('opt-pickup').textContent = `Retiro en Local`;
+
+      // Iniciales o imagen de logo
+      const words = STORE_CONFIG.nombre.trim().split(' ');
+      const initials = words.length > 1 ? (words[0][0] + words[1][0]).toUpperCase() : STORE_CONFIG.nombre.slice(0, 2).toUpperCase();
+      const initialsEl = document.getElementById('store-initials');
+      const logoImgEl = document.getElementById('store-logo-img');
+
+      if (STORE_CONFIG.logo) {
+        logoImgEl.src = STORE_CONFIG.logo;
+        logoImgEl.classList.remove('hidden');
+        initialsEl.classList.add('hidden');
+      } else {
+        logoImgEl.classList.add('hidden');
+        initialsEl.classList.remove('hidden');
+        initialsEl.textContent = initials;
+      }
+
+      // Links de redes y WhatsApp
+      document.getElementById('store-ig-link').href = `https://www.instagram.com/${STORE_CONFIG.ig}`;
+      const waMsg = encodeURIComponent(`¡Hola ${STORE_CONFIG.nombre}! Estoy viendo su catálogo online y quería hacerles una consulta.`);
+      document.getElementById('floating-wa-btn').href = `https://wa.me/${STORE_CONFIG.wa}?text=${waMsg}`;
+
+      // Mostrar u ocultar barra interactiva de temas
+      document.getElementById('demo-switcher-bar').style.display = STORE_CONFIG.barra ? 'flex' : 'none';
+    }
+
+    // Genera el HTML de la marca de agua a 3/4 (usa el logo del cliente o sello tipográfico)
+    function getWatermarkHTML() {
+      if (STORE_CONFIG.logo) {
+        return `<img src="${STORE_CONFIG.logo}" alt="Marca de agua" class="w-full h-full object-contain opacity-25 pointer-events-none select-none" />`;
+      }
+      return `
+        <div class="w-full h-full flex items-center justify-center pointer-events-none select-none">
+          <div class="border-2 border-white/30 bg-black/20 backdrop-blur-[1px] px-4 py-2 rounded-xl transform -rotate-12 text-center shadow-sm max-w-[90%]">
+            <div class="font-heading font-black text-white/45 text-sm sm:text-base tracking-widest uppercase truncate">${STORE_CONFIG.nombre}</div>
+            <div class="text-[9px] text-white/40 font-bold tracking-[0.25em] uppercase">CATÁLOGO OFICIAL</div>
+          </div>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // 4. FILTRADO Y RENDERIZADO DE CATEGORÍAS Y PRODUCTOS
+    // =========================================================================
+    function getFilteredProductsByRubro() {
+      if (STORE_CONFIG.rubro === 'todos') return DEMO_PRODUCTS;
+      return DEMO_PRODUCTS.filter(p => p.rubro === STORE_CONFIG.rubro);
+    }
+
+    function renderCategories() {
+      const baseProducts = getFilteredProductsByRubro();
+      const categories = ['Todas', ...new Set(baseProducts.map(p => p.categoria))];
+
+      const pillsContainer = document.getElementById('category-pills');
+      const drawerList = document.getElementById('drawer-category-list');
+
+      pillsContainer.innerHTML = categories.map(cat => {
+        const isActive = cat === activeCategory;
+        return `
+          <button
+            onclick="selectCategory('${cat}')"
+            class="px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition border ${
+              isActive ? 'theme-accent border-transparent shadow-sm' : 'theme-card theme-border hover:opacity-80'
+            }"
+          >
+            ${cat}
+          </button>
+        `;
+      }).join('');
+
+      drawerList.innerHTML = categories.map(cat => {
+        const isActive = cat === activeCategory;
+        return `
+          <button
+            onclick="selectCategory('${cat}'); toggleCategoryDrawer(false);"
+            class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-bold flex items-center justify-between ${
+              isActive ? 'theme-accent' : 'hover:opacity-80'
+            }"
+          >
+            <span>${cat}</span>
+            <span>→</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function selectCategory(cat) {
+      activeCategory = cat;
+      renderCategories();
+      renderCatalog();
+    }
+
+    function resetFilters() {
+      activeCategory = 'Todas';
+      document.getElementById('search-input').value = '';
+      renderCategories();
+      renderCatalog();
+    }
+
+    function renderCatalog() {
+      const query = document.getElementById('search-input').value.toLowerCase().trim();
+      const sortBy = document.getElementById('sort-select').value;
+      let list = getFilteredProductsByRubro();
+
+      if (activeCategory !== 'Todas') {
+        list = list.filter(p => p.categoria === activeCategory);
+      }
+
+      if (query) {
+        list = list.filter(p =>
+          p.nombre.toLowerCase().includes(query) ||
+          p.categoria.toLowerCase().includes(query) ||
+          p.colores.some(c => c.toLowerCase().includes(query))
+        );
+      }
+
+      if (sortBy === 'price-asc') list = [...list].sort((a, b) => a.precio - b.precio);
+      if (sortBy === 'price-desc') list = [...list].sort((a, b) => b.precio - a.precio);
+      if (sortBy === 'featured') list = [...list].sort((a, b) => Number(b.nuevo) - Number(a.nuevo));
+
+      const grid = document.getElementById('products-grid');
+
+      if (list.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full theme-card border rounded-2xl p-10 text-center space-y-3">
+            <p class="font-heading font-bold text-base">No encontramos prendas con ese filtro</p>
+            <button onclick="resetFilters()" class="theme-accent px-4 py-2 rounded-xl text-xs font-bold">Ver todo el catálogo</button>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = list.map(prod => {
+        if (!selectedVariants[prod.id]) {
+          selectedVariants[prod.id] = { talle: prod.talles[0], color: prod.colores[0] };
+        }
+        const currentSel = selectedVariants[prod.id];
+
+        return `
+          <article class="theme-card border rounded-2xl overflow-hidden flex flex-col shadow-sm hover:shadow-md transition">
+            <!-- Imagen con zoom y Marca de Agua a 3/4 -->
+            <div class="relative aspect-[4/5] bg-zinc-200 overflow-hidden cursor-zoom-in group" onclick="openLightbox('${prod.img}')">
+              <img src="${prod.img}" alt="${prod.nombre}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+              <div class="watermark-overlay absolute inset-0 m-auto flex items-center justify-center">
+                ${getWatermarkHTML()}
+              </div>
+              ${prod.nuevo ? `<span class="absolute top-2.5 left-2.5 theme-accent text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full shadow">Ingreso</span>` : ''}
+              <span class="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-full">🔍 Ampliar</span>
+            </div>
+
+            <!-- Información y Selectores -->
+            <div class="p-3 sm:p-4 flex-1 flex flex-col justify-between space-y-3">
+              <div>
+                <div class="text-[10px] font-bold uppercase tracking-wider theme-muted">${prod.categoria}</div>
+                <h2 class="font-heading font-bold text-xs sm:text-sm leading-snug mt-0.5 line-clamp-2">${prod.nombre}</h2>
+                <div class="font-extrabold text-base sm:text-lg mt-1">$${prod.precio.toLocaleString('es-AR')}</div>
+              </div>
+
+              <div class="space-y-2 pt-1 border-t theme-border">
+                <!-- Selector de Talle -->
+                <div>
+                  <span class="text-[10px] font-bold theme-muted block mb-1">Talle:</span>
+                  <div class="flex flex-wrap gap-1">
+                    ${prod.talles.map(t => `
+                      <button
+                        onclick="selectVariant('${prod.id}', 'talle', '${t}')"
+                        class="px-2 py-0.5 rounded-md text-[11px] font-bold border transition ${
+                          currentSel.talle === t ? 'theme-accent border-transparent' : 'theme-badge theme-border'
+                        }"
+                      >${t}</button>
+                    `).join('')}
+                  </div>
+                </div>
+
+                <!-- Selector de Color -->
+                <div>
+                  <span class="text-[10px] font-bold theme-muted block mb-1">Color:</span>
+                  <div class="flex flex-wrap gap-1">
+                    ${prod.colores.map(c => `
+                      <button
+                        onclick="selectVariant('${prod.id}', 'color', '${c}')"
+                        class="px-2 py-0.5 rounded-md text-[10px] font-semibold border transition ${
+                          currentSel.color === c ? 'theme-accent border-transparent' : 'theme-badge theme-border'
+                        }"
+                      >${c}</button>
+                    `).join('')}
+                  </div>
+                </div>
+
+                <!-- Botón Agregar (Sin abrir carrito automáticamente) -->
+                <button
+                  onclick="addToCart('${prod.id}')"
+                  class="w-full theme-accent py-2.5 rounded-xl font-extrabold text-xs tracking-wide hover:opacity-90 active:scale-[0.98] transition mt-1"
+                >
+                  + AGREGAR AL PEDIDO
+                </button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function selectVariant(prodId, type, value) {
+      if (!selectedVariants[prodId]) selectedVariants[prodId] = {};
+      selectedVariants[prodId][type] = value;
+      renderCatalog();
+    }
+
+    // =========================================================================
+    // 5. CARRITO PERSISTENTE Y CHECKOUT POR WHATSAPP
+    // =========================================================================
+    function loadCartFromStorage() {
+      try {
+        const saved = localStorage.getItem(getCartStorageKey());
+        cart = saved ? JSON.parse(saved) : [];
+      } catch (e) {
+        cart = [];
+      }
+      updateCartUI();
+    }
+
+    function saveCartToStorage() {
+      localStorage.setItem(getCartStorageKey(), JSON.stringify(cart));
+      updateCartUI();
+    }
+
+    function addToCart(prodId) {
+      const prod = DEMO_PRODUCTS.find(p => p.id === prodId);
+      if (!prod) return;
+
+      const variant = selectedVariants[prodId] || { talle: prod.talles[0], color: prod.colores[0] };
+      const itemKey = `${prod.id}_${variant.talle}_${variant.color}`;
+
+      const existing = cart.find(i => i.key === itemKey);
+      if (existing) {
+        existing.cantidad += 1;
+      } else {
+        cart.push({
+          key: itemKey,
+          id: prod.id,
+          nombre: prod.nombre,
+          precio: prod.precio,
+          talle: variant.talle,
+          color: variant.color,
+          img: prod.img,
+          cantidad: 1
+        });
+      }
+
+      saveCartToStorage();
+      showToast();
+    }
+
+    function changeQty(itemKey, delta) {
+      const idx = cart.findIndex(i => i.key === itemKey);
+      if (idx === -1) return;
+      cart[idx].cantidad += delta;
+      if (cart[idx].cantidad <= 0) cart.splice(idx, 1);
+      saveCartToStorage();
+    }
+
+    function clearCart() {
+      cart = [];
+      saveCartToStorage();
+    }
+
+    function updateCartUI() {
+      const totalItems = cart.reduce((acc, item) => acc + item.cantidad, 0);
+      const totalPrice = cart.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
+
+      document.getElementById('cart-count').textContent = totalItems;
+      document.getElementById('cart-total').textContent = `$${totalPrice.toLocaleString('es-AR')} ARS`;
+
+      const container = document.getElementById('cart-items-container');
+      if (cart.length === 0) {
+        container.innerHTML = `<p class="text-center theme-muted text-xs py-8">Tu carrito está vacío. Elegí talle y color en el catálogo para armar tu pedido.</p>`;
+        return;
+      }
+
+      container.innerHTML = cart.map(item => `
+        <div class="flex items-center gap-3 p-2.5 rounded-xl border theme-border">
+          <img src="${item.img}" alt="${item.nombre}" class="w-14 h-16 object-cover rounded-lg flex-shrink-0" />
+          <div class="flex-1 min-w-0">
+            <h4 class="font-bold text-xs truncate">${item.nombre}</h4>
+            <p class="text-[11px] theme-muted">Talle: <b>${item.talle}</b> | Color: <b>${item.color}</b></p>
+            <p class="font-extrabold text-xs mt-0.5">$${(item.precio * item.cantidad).toLocaleString('es-AR')}</p>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button onclick="changeQty('${item.key}', -1)" class="w-6 h-6 rounded-md border theme-border font-bold text-xs">-</button>
+            <span class="text-xs font-extrabold w-4 text-center">${item.cantidad}</span>
+            <button onclick="changeQty('${item.key}', 1)" class="w-6 h-6 rounded-md border theme-border font-bold text-xs">+</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function showToast() {
+      const toast = document.getElementById('toast-notification');
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2600);
+    }
+
+    function toggleCart(open) {
+      const drawer = document.getElementById('cart-drawer');
+      const backdrop = document.getElementById('cart-backdrop');
+      if (open) {
+        backdrop.classList.remove('hidden');
+        drawer.classList.remove('translate-x-full');
+      } else {
+        backdrop.classList.add('hidden');
+        drawer.classList.add('translate-x-full');
+      }
+    }
+
+    function toggleCategoryDrawer(open) {
+      const drawer = document.getElementById('cat-drawer');
+      const backdrop = document.getElementById('cat-drawer-backdrop');
+      if (open) {
+        backdrop.classList.remove('hidden');
+        drawer.classList.remove('-translate-x-full');
+      } else {
+        backdrop.classList.add('hidden');
+        drawer.classList.add('-translate-x-full');
+      }
+    }
+
+    function toggleAddressField() {
+      const delivery = document.getElementById('delivery-method').value;
+      const box = document.getElementById('buyer-address-box');
+      if (delivery.includes('Retiro')) {
+        box.classList.add('hidden');
+      } else {
+        box.classList.remove('hidden');
+      }
+    }
+
+    function sendOrderWhatsApp() {
+      if (cart.length === 0) {
+        alert('Sumá al menos una prenda al carrito para enviar el pedido.');
+        return;
+      }
+      const name = document.getElementById('buyer-name').value.trim() || 'Cliente';
+      const delivery = document.getElementById('delivery-method').value;
+      const address = document.getElementById('buyer-address').value.trim();
+      const payment = document.getElementById('buyer-payment').value;
+      const total = cart.reduce((acc, i) => acc + (i.precio * i.cantidad), 0);
+
+      let lines = [
+        `¡Hola *${STORE_CONFIG.nombre}*! 👋 Quiero realizar el siguiente pedido desde el Catálogo Web:`,
+        ``
+      ];
+
+      cart.forEach(item => {
+        lines.push(`▪️ *${item.cantidad}x ${item.nombre}*`);
+        lines.push(`   Talle: ${item.talle} | Color: ${item.color} ($${(item.precio * item.cantidad).toLocaleString('es-AR')})`);
+      });
+
+      lines.push(``);
+      lines.push(`💰 *TOTAL ESTIMADO: $${total.toLocaleString('es-AR')} ARS*`);
+      lines.push(`👤 *Cliente:* ${name}`);
+      lines.push(`🚚 *Entrega:* ${delivery}`);
+      if (!delivery.includes('Retiro') && address) {
+        lines.push(`📍 *Dirección:* ${address}`);
+      }
+      lines.push(`💳 *Pago:* ${payment}`);
+
+      const url = `https://wa.me/${STORE_CONFIG.wa}?text=${encodeURIComponent(lines.join('\n'))}`;
+      window.open(url, '_blank');
+    }
+
+    // =========================================================================
+    // 6. LIGHTBOX Y PANEL VENDEDOR GENERADOR DE LINKS (?armar=1)
+    // =========================================================================
+    function openLightbox(imgSrc) {
+      document.getElementById('lightbox-img').src = imgSrc;
+      document.getElementById('lightbox-watermark').innerHTML = getWatermarkHTML();
+      const modal = document.getElementById('lightbox-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeLightbox() {
+      const modal = document.getElementById('lightbox-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function setLiveTheme(themeName) {
+      STORE_CONFIG.tema = themeName;
+      applyStoreBranding();
+    }
+
+    function toggleBuilder(open) {
+      const modal = document.getElementById('builder-modal');
+      if (open) {
+        document.getElementById('gen-nombre').value = STORE_CONFIG.nombre;
+        document.getElementById('gen-slogan').value = STORE_CONFIG.slogan;
+        document.getElementById('gen-tema').value = STORE_CONFIG.tema;
+        document.getElementById('gen-rubro').value = STORE_CONFIG.rubro;
+        document.getElementById('gen-wa').value = STORE_CONFIG.wa;
+        document.getElementById('gen-ig').value = STORE_CONFIG.ig;
+        document.getElementById('gen-dir').value = STORE_CONFIG.dir;
+        document.getElementById('gen-logo').value = STORE_CONFIG.logo;
+        document.getElementById('gen-barra').checked = STORE_CONFIG.barra;
+        buildCustomUrl();
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      } else {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
+    function readBuilderInputs() {
+      STORE_CONFIG.nombre = document.getElementById('gen-nombre').value.trim() || 'MI TIENDA';
+      STORE_CONFIG.slogan = document.getElementById('gen-slogan').value.trim() || 'Catálogo Online — Pedidos por WhatsApp';
+      STORE_CONFIG.tema = document.getElementById('gen-tema').value;
+      STORE_CONFIG.rubro = document.getElementById('gen-rubro').value;
+      STORE_CONFIG.wa = document.getElementById('gen-wa').value.replace(/\D/g, '') || '5492914359867';
+      STORE_CONFIG.ig = document.getElementById('gen-ig').value.replace('@', '').trim();
+      STORE_CONFIG.dir = document.getElementById('gen-dir').value.trim();
+      STORE_CONFIG.logo = document.getElementById('gen-logo').value.trim();
+      STORE_CONFIG.barra = document.getElementById('gen-barra').checked;
+    }
+
+    function buildCustomUrl() {
+      readBuilderInputs();
+      const baseUrl = window.location.origin + window.location.pathname;
+      const p = new URLSearchParams();
+      p.set('nombre', STORE_CONFIG.nombre);
+      p.set('tema', STORE_CONFIG.tema);
+      p.set('rubro', STORE_CONFIG.rubro);
+      p.set('wa', STORE_CONFIG.wa);
+      if (STORE_CONFIG.ig) p.set('ig', STORE_CONFIG.ig);
+      if (STORE_CONFIG.dir) p.set('dir', STORE_CONFIG.dir);
+      if (STORE_CONFIG.slogan) p.set('slogan', STORE_CONFIG.slogan);
+      if (STORE_CONFIG.logo) p.set('logo', STORE_CONFIG.logo);
+      if (!STORE_CONFIG.barra) p.set('barra', '0');
+
+      const finalUrl = `${baseUrl}?${p.toString()}`;
+      document.getElementById('gen-result-url').value = finalUrl;
+      return finalUrl;
+    }
+
+    function previewFromBuilder() {
+      buildCustomUrl();
+      activeCategory = 'Todas';
+      applyStoreBranding();
+      renderCategories();
+      renderCatalog();
+      toggleBuilder(false);
+    }
+
+    function applyAndCopyDemoLink() {
+      const url = buildCustomUrl();
+      navigator.clipboard.writeText(url);
+      alert('✅ Link personalizado copiado al portapapeles.\n\nYa podés pegarlo en el WhatsApp o Instagram del cliente.');
+    }
+
+    function sendPitchWhatsApp() {
+      const url = buildCustomUrl();
+      const pitch = [
+        `¡Hola! ¿Cómo estás? Te armé una *muestra interactiva* de cómo quedaría el Catálogo Web Oficial de *${STORE_CONFIG.nombre}* para recibir pedidos ordenados por talle y color directo a tu WhatsApp:`,
+        ``,
+        `👉 ${url}`,
+        ``,
+        `Probá elegir cualquier prenda, seleccionar talle/color y tocar *"Agregar al pedido"*. Además, todas tus fotos quedan protegidas automáticamente con la marca de agua de *${STORE_CONFIG.nombre}*.`
+      ].join('\n');
+
+      window.open(`https://wa.me/${STORE_CONFIG.wa}?text=${encodeURIComponent(pitch)}`, '_blank');
+    }
+
+    // Escuchar cambios en el panel para actualizar el link en vivo
+    document.querySelectorAll('#builder-modal input, #builder-modal select').forEach(el => {
+      el.addEventListener('input', buildCustomUrl);
+    });
+
+    initApp();
+  </script>
+</body>
+</html>
