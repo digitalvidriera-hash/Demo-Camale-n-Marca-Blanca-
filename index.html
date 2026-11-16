@@ -111,11 +111,9 @@
     .theme-muted { color: var(--text-muted); }
     .theme-badge { background-color: var(--badge-bg); color: var(--badge-text); }
 
-    /* Corrección específica para header oscuro en tema deportivo */
     body.theme-deportivo header { color: #f8fafc; }
     body.theme-deportivo header .theme-muted { color: #94a3b8; }
 
-    /* Ocultar barra de scroll en carrusel de categorías */
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -171,7 +169,6 @@
   <!-- CONTROLES: BUSCADOR, ORDEN Y CATEGORÍAS -->
   <section class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-4 pb-2 space-y-3">
     <div class="flex flex-col sm:flex-row gap-2.5">
-      <!-- Botón Menú Categorías Mobile + Buscador -->
       <div class="flex gap-2 flex-1">
         <button onclick="toggleCategoryDrawer(true)" class="sm:hidden theme-card border px-3.5 py-2.5 rounded-xl flex items-center gap-1.5 text-xs font-semibold shadow-sm">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7"/></svg>
@@ -190,7 +187,6 @@
         </div>
       </div>
 
-      <!-- Ordenamiento + Estado de Stock -->
       <div class="flex items-center justify-between sm:justify-end gap-2">
         <div class="text-[11px] theme-muted flex items-center gap-1.5 px-2">
           <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -224,13 +220,13 @@
     <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5"></div>
   </main>
 
-  <!-- NOTIFICACIÓN TOAST AL AGREGAR PRODUCTO (SIN ABRIR EL CARRITO SOLO) -->
+  <!-- NOTIFICACIÓN TOAST AL AGREGAR PRODUCTO -->
   <div id="toast-notification" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-40 bg-emerald-600 text-white px-4 py-2.5 rounded-full shadow-xl text-xs sm:text-sm font-bold flex items-center gap-2.5 transition-all duration-300 opacity-0 pointer-events-none">
     <span>✓ Prenda sumada al pedido</span>
     <button onclick="toggleCart(true)" class="underline font-extrabold bg-white/20 px-2 py-0.5 rounded-full">Ver carrito</button>
   </div>
 
-  <!-- BARRA FLOTANTE MODO DEMO INTERACTIVA (OPCIONAL PARA EL CLIENTE) -->
+  <!-- BARRA FLOTANTE DE ESTILOS (CONTROLADA POR CHECKBOX DEL GENERADOR) -->
   <div id="demo-switcher-bar" class="fixed bottom-3 left-3 z-30 theme-card border shadow-xl rounded-2xl p-2 flex items-center gap-1.5 text-[11px]">
     <span class="font-bold px-2 hidden sm:inline">🎨 Estilo:</span>
     <button onclick="setLiveTheme('pastel')" class="px-2.5 py-1 rounded-lg border theme-border font-semibold hover:opacity-80">Pastel</button>
@@ -239,8 +235,11 @@
     <button onclick="setLiveTheme('deportivo')" class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white font-semibold hover:opacity-80">Sport</button>
   </div>
 
-  <!-- BOTÓN FLOTANTE DE WHATSAPP DIRECTO -->
-  <div class="fixed bottom-3 right-3 z-30">
+  <!-- BOTÓN FLOTANTE DE WHATSAPP + BOTÓN VENDEDOR (SOLO VISIBLE CON ?armar=1) -->
+  <div class="fixed bottom-3 right-3 z-30 flex items-center gap-2">
+    <button id="seller-floating-btn" onclick="toggleBuilder(true)" class="hidden bg-zinc-900 text-emerald-400 border border-emerald-500/40 px-3.5 py-2.5 rounded-full shadow-lg font-extrabold text-xs hover:scale-105 transition">
+      ⚡ Armar Demo
+    </button>
     <a id="floating-wa-btn" href="#" target="_blank" class="bg-[#25D366] text-white px-4 py-2.5 rounded-full shadow-lg font-bold text-xs sm:text-sm flex items-center gap-2 hover:scale-105 transition">
       <span>💬 Consultar</span>
     </a>
@@ -252,7 +251,6 @@
       <button onclick="closeLightbox()" class="absolute -top-10 right-0 text-white bg-white/20 px-3 py-1 rounded-full text-xs font-bold">✕ Cerrar vista</button>
       <div class="relative w-full overflow-hidden rounded-2xl bg-zinc-900 flex items-center justify-center">
         <img id="lightbox-img" src="" alt="Prenda ampliada" class="w-full max-h-[80vh] object-contain" />
-        <!-- Marca de agua 3/4 en zoom -->
         <div id="lightbox-watermark" class="watermark-overlay absolute inset-0 m-auto flex items-center justify-center"></div>
       </div>
     </div>
@@ -261,7 +259,6 @@
   <!-- DRAWER DEL CARRITO DE COMPRAS -->
   <div id="cart-backdrop" onclick="toggleCart(false)" class="fixed inset-0 bg-black/60 z-40 hidden"></div>
   <div id="cart-drawer" class="fixed top-0 right-0 bottom-0 w-full max-w-md theme-card border-l z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
-    <!-- Encabezado del carrito con botón VOLVER AL CATÁLOGO -->
     <div class="p-4 border-b theme-border flex items-center justify-between gap-2">
       <button onclick="toggleCart(false)" class="px-3 py-1.5 rounded-xl border theme-border text-xs font-extrabold flex items-center gap-1 hover:opacity-80">
         ← VOLVER AL CATÁLOGO
@@ -270,7 +267,6 @@
       <button onclick="clearCart()" class="text-[11px] text-red-500 font-semibold hover:underline">Vaciar</button>
     </div>
 
-    <!-- Lista de prendas + Datos de entrega -->
     <div class="p-4 overflow-y-auto flex-1 space-y-5">
       <div id="cart-items-container" class="space-y-3"></div>
 
@@ -308,7 +304,6 @@
       </div>
     </div>
 
-    <!-- Pie de carrito -->
     <div class="p-4 border-t theme-border space-y-2.5">
       <div class="flex items-center justify-between text-base font-extrabold">
         <span>Total Estimado:</span>
@@ -323,7 +318,7 @@
     </div>
   </div>
 
-  <!-- MODAL OCULTO: GENERADOR DE DEMOS PARA CLIENTES (?armar=1) -->
+  <!-- MODAL OCULTO: GENERADOR DE DEMOS PARA CLIENTES -->
   <div id="builder-modal" class="fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-3 overflow-y-auto">
     <div class="bg-zinc-900 text-zinc-100 border border-zinc-700 rounded-2xl max-w-xl w-full p-5 space-y-4 my-8 shadow-2xl">
       <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
@@ -390,9 +385,9 @@
         </div>
       </div>
 
-      <!-- Resultado del Link -->
+      <!-- Resultado del Link (Siempre limpio, sin ?armar=1) -->
       <div class="bg-zinc-950 p-3 rounded-xl border border-zinc-800 space-y-2">
-        <div class="text-[11px] text-zinc-400 font-semibold">Link personalizado listo para enviar:</div>
+        <div class="text-[11px] text-zinc-400 font-semibold">Link limpio para el cliente (sin botones de configuración):</div>
         <input id="gen-result-url" type="text" readonly class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-2.5 py-1.5 text-xs text-emerald-400 font-mono" />
       </div>
 
@@ -410,13 +405,12 @@
     </div>
   </div>
 
-  <!-- FOOTER CON ACCESO SECRETO AL PANEL VENDEDOR -->
-  <footer class="border-t theme-border mt-10 py-6 px-4 text-center text-xs theme-muted">
-    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-      <p>© <span id="footer-store-name" class="font-bold">TIENDA DEMO</span> — Catálogo Digital Interactivo</p>
-      <button onclick="toggleBuilder(true)" class="opacity-40 hover:opacity-100 transition text-[11px] underline">
-        ⚡ Configurar Demo
-      </button>
+  <!-- FOOTER 100% LIMPIO PARA EL CLIENTE (CON GESTO SECRETO DE 5 TOQUES EN ©) -->
+  <footer class="border-t theme-border mt-10 py-6 px-4 text-center text-xs theme-muted select-none">
+    <div class="max-w-7xl mx-auto flex items-center justify-center">
+      <p onclick="handleSecretAdminTap()">
+        © <span id="footer-store-name" class="font-bold">TIENDA DEMO</span> — Catálogo Digital Oficial
+      </p>
     </div>
   </footer>
 
@@ -424,15 +418,16 @@
     // =========================================================================
     // 1. CONFIGURACIÓN POR DEFECTO Y PARÁMETROS CAMALEÓN (URL)
     // =========================================================================
-    // Si querés conectar un Google Sheets propio más adelante, pegá el ID acá:
     const OPTIONAL_GOOGLE_SHEET_ID = ""; 
 
     const params = new URLSearchParams(window.location.search);
+    const IS_SELLER_MODE = params.get('armar') === '1' || params.get('panel') === '1';
+
     const STORE_CONFIG = {
       nombre: params.get('nombre') || 'URBAN STUDIO',
       slogan: params.get('slogan') || 'Catálogo Oficial — Pedidos Mayoristas y Minoristas',
-      tema: params.get('tema') || 'pastel', // pastel | urbano | boutique | deportivo
-      rubro: params.get('rubro') || 'todos', // todos | urbano | boutique | deportivo
+      tema: params.get('tema') || 'pastel',
+      rubro: params.get('rubro') || 'todos',
       wa: (params.get('wa') || '5492914359867').replace(/\D/g, ''),
       ig: (params.get('ig') || 'judaindumentaria1').replace('@', ''),
       dir: params.get('dir') || '📍 Centro, Bahía Blanca | Lun. a Sáb. 10:00 a 20:00 hs',
@@ -441,7 +436,7 @@
     };
 
     // =========================================================================
-    // 2. BASE DE PRODUCTOS DE MUESTRA POR RUBRO (FUNCIONA SIN CONFIGURAR NADA)
+    // 2. BASE DE PRODUCTOS DE MUESTRA POR RUBRO
     // =========================================================================
     const DEMO_PRODUCTS = [
       // PACK URBANO / STREETWEAR
@@ -470,16 +465,17 @@
     ];
 
     let activeCategory = 'Todas';
-    let selectedVariants = {}; // Guarda talle y color elegido por tarjeta
+    let selectedVariants = {};
     let cart = [];
+    let secretTapCount = 0;
+    let secretTapTimer = null;
 
-    // Clave única de carrito por comercio para que distintas demos no mezclen productos
     function getCartStorageKey() {
       return 'catalogo_demo_cart_' + STORE_CONFIG.nombre.toLowerCase().replace(/\s+/g, '_');
     }
 
     // =========================================================================
-    // 3. INICIALIZACIÓN Y APLICACIÓN DE IDENTIDAD VISUAL
+    // 3. INICIALIZACIÓN Y ACCESO SECRETO DEL VENDEDOR
     // =========================================================================
     function initApp() {
       applyStoreBranding();
@@ -487,17 +483,31 @@
       renderCategories();
       renderCatalog();
 
-      // Abrir el panel vendedor automáticamente si entra con ?armar=1 o ?panel=1
-      if (params.get('armar') === '1' || params.get('panel') === '1') {
+      // Si entraste con ?armar=1 o ?panel=1, habilita el botón flotante para tu sesión y abre el modal
+      if (IS_SELLER_MODE) {
+        document.getElementById('seller-floating-btn').classList.remove('hidden');
         toggleBuilder(true);
       }
     }
 
+    // Gesto secreto: tocar 5 veces seguidas el texto de copyright en el footer abre el generador
+    function handleSecretAdminTap() {
+      secretTapCount += 1;
+      clearTimeout(secretTapTimer);
+      if (secretTapCount >= 5) {
+        secretTapCount = 0;
+        document.getElementById('seller-floating-btn').classList.remove('hidden');
+        toggleBuilder(true);
+        return;
+      }
+      secretTapTimer = setTimeout(() => {
+        secretTapCount = 0;
+      }, 1400);
+    }
+
     function applyStoreBranding() {
-      // Aplicar clase de tema al body
       document.body.className = `theme-${STORE_CONFIG.tema} min-h-screen flex flex-col`;
 
-      // Títulos y textos
       document.getElementById('page-title').textContent = `${STORE_CONFIG.nombre} | Catálogo Oficial`;
       document.getElementById('store-name').textContent = STORE_CONFIG.nombre;
       document.getElementById('footer-store-name').textContent = STORE_CONFIG.nombre;
@@ -506,7 +516,6 @@
       document.getElementById('opt-pickup').value = `Retiro en Local (${STORE_CONFIG.dir.replace('📍', '').trim()})`;
       document.getElementById('opt-pickup').textContent = `Retiro en Local`;
 
-      // Iniciales o imagen de logo
       const words = STORE_CONFIG.nombre.trim().split(' ');
       const initials = words.length > 1 ? (words[0][0] + words[1][0]).toUpperCase() : STORE_CONFIG.nombre.slice(0, 2).toUpperCase();
       const initialsEl = document.getElementById('store-initials');
@@ -522,16 +531,13 @@
         initialsEl.textContent = initials;
       }
 
-      // Links de redes y WhatsApp
       document.getElementById('store-ig-link').href = `https://www.instagram.com/${STORE_CONFIG.ig}`;
       const waMsg = encodeURIComponent(`¡Hola ${STORE_CONFIG.nombre}! Estoy viendo su catálogo online y quería hacerles una consulta.`);
       document.getElementById('floating-wa-btn').href = `https://wa.me/${STORE_CONFIG.wa}?text=${waMsg}`;
 
-      // Mostrar u ocultar barra interactiva de temas
       document.getElementById('demo-switcher-bar').style.display = STORE_CONFIG.barra ? 'flex' : 'none';
     }
 
-    // Genera el HTML de la marca de agua a 3/4 (usa el logo del cliente o sello tipográfico)
     function getWatermarkHTML() {
       if (STORE_CONFIG.logo) {
         return `<img src="${STORE_CONFIG.logo}" alt="Marca de agua" class="w-full h-full object-contain opacity-25 pointer-events-none select-none" />`;
@@ -645,7 +651,6 @@
 
         return `
           <article class="theme-card border rounded-2xl overflow-hidden flex flex-col shadow-sm hover:shadow-md transition">
-            <!-- Imagen con zoom y Marca de Agua a 3/4 -->
             <div class="relative aspect-[4/5] bg-zinc-200 overflow-hidden cursor-zoom-in group" onclick="openLightbox('${prod.img}')">
               <img src="${prod.img}" alt="${prod.nombre}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
               <div class="watermark-overlay absolute inset-0 m-auto flex items-center justify-center">
@@ -655,7 +660,6 @@
               <span class="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-full">🔍 Ampliar</span>
             </div>
 
-            <!-- Información y Selectores -->
             <div class="p-3 sm:p-4 flex-1 flex flex-col justify-between space-y-3">
               <div>
                 <div class="text-[10px] font-bold uppercase tracking-wider theme-muted">${prod.categoria}</div>
@@ -664,7 +668,6 @@
               </div>
 
               <div class="space-y-2 pt-1 border-t theme-border">
-                <!-- Selector de Talle -->
                 <div>
                   <span class="text-[10px] font-bold theme-muted block mb-1">Talle:</span>
                   <div class="flex flex-wrap gap-1">
@@ -679,7 +682,6 @@
                   </div>
                 </div>
 
-                <!-- Selector de Color -->
                 <div>
                   <span class="text-[10px] font-bold theme-muted block mb-1">Color:</span>
                   <div class="flex flex-wrap gap-1">
@@ -694,7 +696,6 @@
                   </div>
                 </div>
 
-                <!-- Botón Agregar (Sin abrir carrito automáticamente) -->
                 <button
                   onclick="addToCart('${prod.id}')"
                   class="w-full theme-accent py-2.5 rounded-xl font-extrabold text-xs tracking-wide hover:opacity-90 active:scale-[0.98] transition mt-1"
@@ -880,7 +881,7 @@
     }
 
     // =========================================================================
-    // 6. LIGHTBOX Y PANEL VENDEDOR GENERADOR DE LINKS (?armar=1)
+    // 6. LIGHTBOX Y PANEL VENDEDOR GENERADOR DE LINKS
     // =========================================================================
     function openLightbox(imgSrc) {
       document.getElementById('lightbox-img').src = imgSrc;
@@ -934,6 +935,7 @@
       STORE_CONFIG.barra = document.getElementById('gen-barra').checked;
     }
 
+    // Genera SIEMPRE un link limpio para el cliente (nunca incluye armar=1 ni panel=1)
     function buildCustomUrl() {
       readBuilderInputs();
       const baseUrl = window.location.origin + window.location.pathname;
@@ -965,7 +967,7 @@
     function applyAndCopyDemoLink() {
       const url = buildCustomUrl();
       navigator.clipboard.writeText(url);
-      alert('✅ Link personalizado copiado al portapapeles.\n\nYa podés pegarlo en el WhatsApp o Instagram del cliente.');
+      alert('✅ Link limpio copiado al portapapeles (sin acceso al panel de configuración).');
     }
 
     function sendPitchWhatsApp() {
@@ -981,7 +983,6 @@
       window.open(`https://wa.me/${STORE_CONFIG.wa}?text=${encodeURIComponent(pitch)}`, '_blank');
     }
 
-    // Escuchar cambios en el panel para actualizar el link en vivo
     document.querySelectorAll('#builder-modal input, #builder-modal select').forEach(el => {
       el.addEventListener('input', buildCustomUrl);
     });
