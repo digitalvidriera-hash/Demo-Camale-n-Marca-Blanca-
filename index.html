@@ -124,6 +124,7 @@
       width: 75%;
       height: 75%;
     }
+  button[disabled]{text-decoration:line-through;opacity:.4;cursor:not-allowed}
   </style>
 </head>
 <body class="theme-pastel min-h-screen flex flex-col">
@@ -135,6 +136,8 @@
       <span class="underline opacity-80 hidden sm:inline">(Ver ubicación)</span>
     </a>
   </div>
+
+  <div id="promo-banner" class="hidden theme-accent text-center text-xs font-bold py-1.5 px-3"></div>
 
   <!-- HEADER PRINCIPAL -->
   <header class="theme-header sticky top-0 z-30 backdrop-blur-md border-b">
@@ -275,7 +278,7 @@
 
         <div>
           <label class="text-xs font-semibold block mb-1">Modalidad de entrega</label>
-          <select id="delivery-method" onchange="toggleAddressField()" class="w-full theme-card border rounded-xl px-3 py-2 text-sm">
+          <select id="delivery-method" onchange="toggleAddressField(); updateCartUI()" class="w-full theme-card border rounded-xl px-3 py-2 text-sm">
             <option id="opt-pickup" value="Retiro en Local">Retiro en Local</option>
             <option value="Envío a Domicilio (Cadetería Local)">Envío a Domicilio (Cadetería Local)</option>
             <option value="Envío al Interior / Correo">Envío a todo el país</option>
@@ -294,7 +297,7 @@
           </div>
           <div>
             <label class="text-xs font-semibold block mb-1">Medio de Pago</label>
-            <select id="buyer-payment" class="w-full theme-card border rounded-xl px-3 py-2 text-sm">
+            <select id="buyer-payment" onchange="updateCartUI()" class="w-full theme-card border rounded-xl px-3 py-2 text-sm">
               <option value="Transferencia / Alias">Transferencia / Alias</option>
               <option value="Efectivo en el local">Efectivo</option>
               <option value="Tarjeta / Cuotas">Tarjeta / Link de Pago</option>
@@ -305,6 +308,7 @@
     </div>
 
     <div class="p-4 border-t theme-border space-y-2.5">
+      <div id="cart-breakdown" class="text-xs theme-muted space-y-0.5"></div>
       <div class="flex items-center justify-between text-base font-extrabold">
         <span>Total Estimado:</span>
         <span id="cart-total">$0 ARS</span>
@@ -438,31 +442,166 @@
     // =========================================================================
     // 2. BASE DE PRODUCTOS DE MUESTRA POR RUBRO
     // =========================================================================
-    const DEMO_PRODUCTS = [
-      // PACK URBANO / STREETWEAR
-      { id: 'U1', rubro: 'urbano', categoria: 'Hoodies & Buzos', nombre: 'Hoodie Oversize Heavyweight', precio: 42000, talles: ['S', 'M', 'L', 'XL'], colores: ['Negro Lavado', 'Gris Melange', 'Crudo'], img: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=800&q=80', nuevo: true },
-      { id: 'U2', rubro: 'urbano', categoria: 'Pantalones', nombre: 'Pantalón Cargo Parachute Ripstop', precio: 48500, talles: ['38', '40', '42', '44'], colores: ['Negro', 'Verde Militar', 'Arena'], img: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=800&q=80', nuevo: true },
-      { id: 'U3', rubro: 'urbano', categoria: 'Remeras', nombre: 'Remera Boxy Fit Algodón Peinado 24/1', precio: 22900, talles: ['S', 'M', 'L', 'XL'], colores: ['Blanco', 'Negro', 'Gris Topo'], img: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80', nuevo: false },
-      { id: 'U4', rubro: 'urbano', categoria: 'Camperas', nombre: 'Campera Puffer Engomada Importada', precio: 79000, talles: ['M', 'L', 'XL'], colores: ['Negro Mate', 'Grafito'], img: 'https://images.unsplash.com/photo-1544923246-77307dd654cb?auto=format&fit=crop&w=800&q=80', nuevo: true },
-      { id: 'U5', rubro: 'urbano', categoria: 'Chalecos', nombre: 'Chaleco Puffer Matelaseado Unisex', precio: 54000, talles: ['S', 'M', 'L', 'XL'], colores: ['Negro', 'Hueso'], img: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=800&q=80', nuevo: false },
-      { id: 'U6', rubro: 'urbano', categoria: 'Bermudas & Shorts', nombre: 'Bermuda Denim Baggy Carpenter', precio: 39500, talles: ['38', '40', '42', '44'], colores: ['Azul Óxido', 'Negro'], img: 'https://images.unsplash.com/photo-1565084888279-aca607ecce0c?auto=format&fit=crop&w=800&q=80', nuevo: false },
+    const SHEET_ID = "10h_3EVCtmdPQKBYsgwvFCNR5HPHIV4DobC4ynUFspoE";
+    let PRODUCTS = [];
+    let LOAD_ERROR = false;
 
-      // PACK BOUTIQUE / MODA FEMENINA
-      { id: 'B1', rubro: 'boutique', categoria: 'Blazers & Sacos', nombre: 'Blazer Sastrero Lino Entallado', precio: 64000, talles: ['S', 'M', 'L'], colores: ['Beige Arena', 'Blanco Off', 'Negro'], img: 'https://images.unsplash.com/photo-1591369822096-ffd140ec948f?auto=format&fit=crop&w=800&q=80', nuevo: true },
-      { id: 'B2', rubro: 'boutique', categoria: 'Pantalones', nombre: 'Jean Wide Leg Tiro Alto Rígido', precio: 46000, talles: ['36', '38', '40', '42'], colores: ['Celeste Nevado', 'Azul Clásico'], img: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=800&q=80', nuevo: true },
-      { id: 'B3', rubro: 'boutique', categoria: 'Sweaters & Tejidos', nombre: 'Sweater Tejido Bremer Cuello Redondo', precio: 34500, talles: ['Único'], colores: ['Vison', 'Crudo', 'Rosa Viejo'], img: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&w=800&q=80', nuevo: false },
-      { id: 'B4', rubro: 'boutique', categoria: 'Vestidos & Monos', nombre: 'Vestido Midi Satinado Breteles Finos', precio: 52000, talles: ['S', 'M', 'L'], colores: ['Champagne', 'Negro', 'Terracota'], img: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=800&q=80', nuevo: true },
-      { id: 'B5', rubro: 'boutique', categoria: 'Camisas & Tops', nombre: 'Camisa Oversize Poplin Premium', precio: 36900, talles: ['S/M', 'L/XL'], colores: ['Blanco', 'Celeste Rayado'], img: 'https://images.unsplash.com/photo-1598554747436-c9293d6a588f?auto=format&fit=crop&w=800&q=80', nuevo: false },
-      { id: 'B6', rubro: 'boutique', categoria: 'Camperas', nombre: 'Trench Coat Impermeable Con Lazo', precio: 84000, talles: ['S', 'M', 'L'], colores: ['Camel', 'Negro'], img: 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?auto=format&fit=crop&w=800&q=80', nuevo: true },
+    const norm = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+    const num = s => parseInt(String(s || '').replace(/\D/g, ''), 10) || 0;
+    const money = n => '$' + n.toLocaleString('es-AR');
+    const esc = s => String(s || '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-      // PACK DEPORTIVO / TRAINING
-      { id: 'D1', rubro: 'deportivo', categoria: 'Camperas Deportivas', nombre: 'Campera Rompeviento Running Ultraliviana', precio: 49900, talles: ['S', 'M', 'L', 'XL'], colores: ['Negro/Reflectivo', 'Azul Marino'], img: 'https://images.unsplash.com/photo-1556906781-9a412961c28c?auto=format&fit=crop&w=800&q=80', nuevo: true },
-      { id: 'D2', rubro: 'deportivo', categoria: 'Conjuntos & Calzas', nombre: 'Calza Deportiva Seamless Push Up', precio: 31500, talles: ['S', 'M', 'L'], colores: ['Gris Grafito', 'Negro', 'Verde Petróleo'], img: 'https://images.unsplash.com/photo-1506629082955-511b1aa562c8?auto=format&fit=crop&w=800&q=80', nuevo: true },
-      { id: 'D3', rubro: 'deportivo', categoria: 'Shorts', nombre: 'Short Deportivo Con Calza Interna 2 en 1', precio: 26500, talles: ['M', 'L', 'XL', 'XXL'], colores: ['Negro', 'Gris Oscuro'], img: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80', nuevo: false },
-      { id: 'D4', rubro: 'deportivo', categoria: 'Musculosas & Remeras', nombre: 'Remera Dry-Fit Entrenamiento Respirable', precio: 21900, talles: ['S', 'M', 'L', 'XL'], colores: ['Negro', 'Verde Fluo', 'Blanco'], img: 'https://images.unsplash.com/photo-1581655353564-df123a1eb820?auto=format&fit=crop&w=800&q=80', nuevo: false },
-      { id: 'D5', rubro: 'deportivo', categoria: 'Pantalones', nombre: 'Jogger Deportivo Chupín Con Cierre', precio: 37900, talles: ['S', 'M', 'L', 'XL'], colores: ['Negro', 'Azul Noche'], img: 'https://images.unsplash.com/photo-1552902865-b72c031ac5ea?auto=format&fit=crop&w=800&q=80', nuevo: true },
-      { id: 'D6', rubro: 'deportivo', categoria: 'Camisetas', nombre: 'Buzo Medio Cierre Térmico Microfibra', precio: 43000, talles: ['M', 'L', 'XL'], colores: ['Negro', 'Gris Plata'], img: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=800&q=80', nuevo: false }
-    ];
+    // Separa por coma ignorando las comas dentro de paréntesis: "Surtido (Negro, Gris)" queda entero
+    function splitOut(str) {
+      const out = []; let cur = '', depth = 0;
+      for (const ch of String(str || '')) {
+        if (ch === '(') depth++;
+        if (ch === ')') depth = Math.max(0, depth - 1);
+        if (ch === ',' && depth === 0) { out.push(cur.trim()); cur = ''; } else cur += ch;
+      }
+      out.push(cur.trim());
+      return out.filter(Boolean);
+    }
+
+    function parseCSV(t) {
+      const rows = []; let r = [], c = '', q = false;
+      for (let i = 0; i < t.length; i++) {
+        const ch = t[i];
+        if (q) {
+          if (ch === '"') { if (t[i + 1] === '"') { c += '"'; i++; } else q = false; } else c += ch;
+        } else if (ch === '"') q = true;
+        else if (ch === ',') { r.push(c); c = ''; }
+        else if (ch === '\n' || ch === '\r') { if (ch === '\r' && t[i + 1] === '\n') i++; r.push(c); rows.push(r); r = []; c = ''; }
+        else c += ch;
+      }
+      if (c || r.length) { r.push(c); rows.push(r); }
+      return rows;
+    }
+
+    async function fetchTab(tab) {
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&headers=1&sheet=${encodeURIComponent(tab)}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('No se pudo leer la pestaña ' + tab);
+      return parseCSV(await res.text());
+    }
+
+    function buildProducts(rows) {
+      if (!rows[0] || !rows[0].map(norm).includes('nombre')) throw new Error('El Sheet no es público o cambió el formato');
+      const h = rows[0].map(norm);
+      return rows.slice(1).map(r => Object.fromEntries(h.map((k, i) => [k, (r[i] || '').trim()])))
+        .filter(o => o.nombre && norm(o.visible) === 'si')
+        .map(o => {
+          const stock = {}, talles = [];
+          splitOut(o.talles_y_stock).forEach(x => {
+            const k = x.lastIndexOf(':');
+            const t = k > 0 ? x.slice(0, k).trim() : x.trim();
+            const n = k > 0 ? parseInt(x.slice(k + 1), 10) : 99;
+            if (t) { talles.push(t); stock[t] = isNaN(n) ? 0 : n; }
+          });
+          if (!talles.length) { talles.push('Único'); stock['Único'] = 99; }
+          const colores = splitOut(o.colores).map(esc);
+          const precio = num(o.precio_publico_final) || num(o.precio_lista_base);
+          return {
+            id: o.id || o.nombre, categoria: o.categoria || 'Otros', nombre: esc(o.nombre), desc: esc(o.descripcion_detalle),
+            precio, precioLista: num(o.precio_lista_base), precioEfvo: num(o.precio_efectivo_transf) || precio,
+            descuento: parseFloat(o.descuento_oferta) || 0, talles, stock, colores: colores.length ? colores : ['Único'],
+            img: o.foto_url, img2: o.foto_url_2, nuevo: norm(o.nuevo) === 'si', estado: norm(o.estado_stock)
+          };
+        });
+    }
+
+    // Los parámetros de la URL (?nombre=...) siguen teniendo prioridad sobre el Sheet
+    function applySheetConfig(rows) {
+      const m = {};
+      rows.slice(1).forEach(r => { if (r[0]) m[norm(r[0])] = (r[1] || '').trim(); });
+      const g = k => { const f = Object.keys(m).find(x => x.includes(k)); return f ? m[f] : ''; };
+      const set = (key, val) => { if (val && !params.has(key)) STORE_CONFIG[key] = val; };
+      set('nombre', g('nombre del comercio'));
+      set('slogan', g('eslogan'));
+      const th = norm(g('tema visual'));
+      set('tema', ['pastel', 'urbano', 'boutique', 'deportivo'].includes(th) ? th : '');
+      set('wa', g('whatsapp').replace(/\D/g, ''));
+      set('ig', g('instagram').replace('@', ''));
+      const d = g('direccion'), hs = g('horarios');
+      set('dir', d ? '📍 ' + d + (hs ? ' | ' + hs : '') : '');
+      const logo = g('url del logo');
+      set('logo', /placeholder/i.test(logo) ? '' : logo);
+      Object.assign(STORE_CONFIG, {
+        maps: g('google maps'), banner: g('banner'), entregas: splitOut(g('modalidades')), pagos: splitOut(g('medios de pago')),
+        envio: num(g('costo envio')), gratisDesde: num(g('envio gratis'))
+      });
+    }
+
+    function applySheetUI() {
+      const c = STORE_CONFIG;
+      document.getElementById('store-map-link').href = c.maps || 'https://maps.google.com';
+      const b = document.getElementById('promo-banner');
+      if (c.banner) { b.textContent = c.banner; b.classList.remove('hidden'); }
+      if (c.entregas && c.entregas.length) {
+        document.getElementById('delivery-method').innerHTML = c.entregas.map(e =>
+          `<option ${/retiro/i.test(e) ? 'id="opt-pickup" ' : ''}value="${esc(e)}">${esc(e)}</option>`).join('');
+      }
+      if (c.pagos && c.pagos.length) {
+        document.getElementById('buyer-payment').innerHTML = c.pagos.map(p => `<option value="${esc(p)}">${esc(p)}</option>`).join('');
+      }
+      toggleAddressField();
+    }
+
+    async function loadFromSheet() {
+      try {
+        const [conf, prods] = await Promise.all([fetchTab('CONFIGURACION'), fetchTab('PRODUCTOS')]);
+        applySheetConfig(conf);
+        PRODUCTS = buildProducts(prods);
+      } catch (e) {
+        console.error('[Catálogo] Error leyendo el Google Sheet. ¿Está compartido como "Cualquier persona con el enlace: Lector"?', e);
+        LOAD_ERROR = true;
+      }
+      applySheetUI();
+      applyStoreBranding();
+      if (!LOAD_ERROR) syncCart();
+    }
+
+    // Actualiza precios/stock del carrito guardado con los datos nuevos del Sheet
+    function syncCart() {
+      cart = cart.map(i => { const p = PRODUCTS.find(x => x.id === i.id); return p ? { ...i, precio: p.precio, precioEfvo: p.precioEfvo, max: p.stock[i.talle] } : null; })
+        .filter(i => i && i.max > 0);
+      cart.forEach(i => { i.cantidad = Math.min(i.cantidad, i.max); });
+      saveCartToStorage();
+    }
+
+    function firstAvail(p) { return p.talles.find(t => p.stock[t] > 0) || p.talles[0]; }
+
+    function priceHTML(p) {
+      const off = p.descuento > 0 && p.precioLista > p.precio;
+      return `<div class="mt-1 flex items-baseline gap-1.5 flex-wrap"><span class="font-extrabold text-base sm:text-lg">${money(p.precio)}</span>${off ? `<span class="text-[11px] theme-muted line-through">${money(p.precioLista)}</span>` : ''}</div>` +
+        (p.precioEfvo && p.precioEfvo < p.precio ? `<div class="text-[11px] font-bold">${money(p.precioEfvo)} <span class="theme-muted font-medium">efectivo / transf.</span></div>` : '');
+    }
+
+    function badgesHTML(p) {
+      const out = Object.values(p.stock).every(n => n <= 0);
+      const last = !out && /ltimas/.test(p.estado);
+      return (p.descuento > 0 ? `<span class="absolute top-2.5 right-2.5 bg-red-600 text-white text-[10px] font-extrabold px-2 py-1 rounded-full shadow">-${p.descuento}%</span>` : '') +
+        (out || last ? `<span class="absolute bottom-2 left-2 bg-black/70 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">${out ? 'Agotado' : 'Últimas unidades'}</span>` : '');
+    }
+
+    function isCash() { return /transferencia|efectivo/i.test(document.getElementById('buyer-payment').value); }
+    function unitPrice(i) { return isCash() ? (i.precioEfvo || i.precio) : i.precio; }
+
+    function calcTotals() {
+      const sub = cart.reduce((a, i) => a + unitPrice(i) * i.cantidad, 0);
+      const ahorro = isCash() ? cart.reduce((a, i) => a + (i.precio - (i.precioEfvo || i.precio)) * i.cantidad, 0) : 0;
+      const d = document.getElementById('delivery-method').value;
+      const free = STORE_CONFIG.gratisDesde > 0 && sub >= STORE_CONFIG.gratisDesde;
+      let envio = 0, html = '';
+      const row = (a, b) => `<div class="flex justify-between"><span>${a}</span><span>${b}</span></div>`;
+      if (sub > 0) {
+        html += row('Subtotal', money(sub));
+        if (/cader/i.test(d)) { envio = free ? 0 : (STORE_CONFIG.envio || 0); html += row('Envío cadetería', envio ? money(envio) : '¡Gratis!'); }
+        else if (/correo/i.test(d)) html += row('Envío por correo', 'a coordinar');
+        if (ahorro > 0) html += row('Ahorrás pagando en efectivo / transf.', money(ahorro));
+      }
+      return { subtotal: sub, envio, total: sub + envio, html };
+    }
 
     let activeCategory = 'Todas';
     let selectedVariants = {};
@@ -477,11 +616,14 @@
     // =========================================================================
     // 3. INICIALIZACIÓN Y ACCESO SECRETO DEL VENDEDOR
     // =========================================================================
-    function initApp() {
+    async function initApp() {
       applyStoreBranding();
       loadCartFromStorage();
-      renderCategories();
-      renderCatalog();
+      document.getElementById('products-grid').innerHTML = '<div class="col-span-full text-center py-16 text-sm theme-muted">Cargando catálogo…</div>';
+      await loadFromSheet();
+      if (LOAD_ERROR) {
+        document.getElementById('products-grid').innerHTML = '<div class="col-span-full theme-card border rounded-2xl p-10 text-center space-y-3"><p class="font-bold text-sm">No pudimos cargar el catálogo en este momento</p><button onclick="location.reload()" class="theme-accent px-4 py-2 rounded-xl text-xs font-bold">Reintentar</button></div>';
+      } else { renderCategories(); renderCatalog(); }
 
       // Si entraste con ?armar=1 o ?panel=1, habilita el botón flotante para tu sesión y abre el modal
       if (IS_SELLER_MODE) {
@@ -513,8 +655,8 @@
       document.getElementById('footer-store-name').textContent = STORE_CONFIG.nombre;
       document.getElementById('store-slogan').textContent = STORE_CONFIG.slogan;
       document.getElementById('store-address-text').textContent = STORE_CONFIG.dir;
-      document.getElementById('opt-pickup').value = `Retiro en Local (${STORE_CONFIG.dir.replace('📍', '').trim()})`;
-      document.getElementById('opt-pickup').textContent = `Retiro en Local`;
+      const _pk = document.getElementById('opt-pickup') || {}; _pk.value = `Retiro en Local (${STORE_CONFIG.dir.replace('📍', '').trim()})`;
+      _pk.textContent = `Retiro en Local`;
 
       const words = STORE_CONFIG.nombre.trim().split(' ');
       const initials = words.length > 1 ? (words[0][0] + words[1][0]).toUpperCase() : STORE_CONFIG.nombre.slice(0, 2).toUpperCase();
@@ -556,8 +698,7 @@
     // 4. FILTRADO Y RENDERIZADO DE CATEGORÍAS Y PRODUCTOS
     // =========================================================================
     function getFilteredProductsByRubro() {
-      if (STORE_CONFIG.rubro === 'todos') return DEMO_PRODUCTS;
-      return DEMO_PRODUCTS.filter(p => p.rubro === STORE_CONFIG.rubro);
+      return PRODUCTS;
     }
 
     function renderCategories() {
@@ -645,7 +786,7 @@
 
       grid.innerHTML = list.map(prod => {
         if (!selectedVariants[prod.id]) {
-          selectedVariants[prod.id] = { talle: prod.talles[0], color: prod.colores[0] };
+          selectedVariants[prod.id] = { talle: firstAvail(prod), color: prod.colores[0] };
         }
         const currentSel = selectedVariants[prod.id];
 
@@ -657,14 +798,15 @@
                 ${getWatermarkHTML()}
               </div>
               ${prod.nuevo ? `<span class="absolute top-2.5 left-2.5 theme-accent text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full shadow">Ingreso</span>` : ''}
-              <span class="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-full">🔍 Ampliar</span>
+              ${badgesHTML(prod)}<span class="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-full">🔍 Ampliar</span>
             </div>
 
             <div class="p-3 sm:p-4 flex-1 flex flex-col justify-between space-y-3">
               <div>
                 <div class="text-[10px] font-bold uppercase tracking-wider theme-muted">${prod.categoria}</div>
                 <h2 class="font-heading font-bold text-xs sm:text-sm leading-snug mt-0.5 line-clamp-2">${prod.nombre}</h2>
-                <div class="font-extrabold text-base sm:text-lg mt-1">$${prod.precio.toLocaleString('es-AR')}</div>
+                <p class="text-[11px] theme-muted line-clamp-2 mt-0.5">${prod.desc}</p>
+                ${priceHTML(prod)}
               </div>
 
               <div class="space-y-2 pt-1 border-t theme-border">
@@ -673,7 +815,7 @@
                   <div class="flex flex-wrap gap-1">
                     ${prod.talles.map(t => `
                       <button
-                        onclick="selectVariant('${prod.id}', 'talle', '${t}')"
+                        onclick="selectVariant('${prod.id}', 'talle', '${t}')" ${prod.stock[t] <= 0 ? 'disabled' : ''}
                         class="px-2 py-0.5 rounded-md text-[11px] font-bold border transition ${
                           currentSel.talle === t ? 'theme-accent border-transparent' : 'theme-badge theme-border'
                         }"
@@ -734,21 +876,23 @@
     }
 
     function addToCart(prodId) {
-      const prod = DEMO_PRODUCTS.find(p => p.id === prodId);
+      const prod = PRODUCTS.find(p => p.id === prodId);
       if (!prod) return;
 
-      const variant = selectedVariants[prodId] || { talle: prod.talles[0], color: prod.colores[0] };
+      const variant = selectedVariants[prodId] || { talle: firstAvail(prod), color: prod.colores[0] };
+      if (!(prod.stock[variant.talle] > 0)) { alert('Ese talle está agotado.'); return; }
       const itemKey = `${prod.id}_${variant.talle}_${variant.color}`;
 
       const existing = cart.find(i => i.key === itemKey);
       if (existing) {
+        if (existing.cantidad >= (existing.max || 99)) { alert('No tenemos más stock de ese talle.'); return; }
         existing.cantidad += 1;
       } else {
         cart.push({
           key: itemKey,
           id: prod.id,
           nombre: prod.nombre,
-          precio: prod.precio,
+          precio: prod.precio, precioEfvo: prod.precioEfvo, max: prod.stock[variant.talle],
           talle: variant.talle,
           color: variant.color,
           img: prod.img,
@@ -763,7 +907,7 @@
     function changeQty(itemKey, delta) {
       const idx = cart.findIndex(i => i.key === itemKey);
       if (idx === -1) return;
-      cart[idx].cantidad += delta;
+      cart[idx].cantidad = Math.min(cart[idx].cantidad + delta, cart[idx].max || 99);
       if (cart[idx].cantidad <= 0) cart.splice(idx, 1);
       saveCartToStorage();
     }
@@ -775,10 +919,11 @@
 
     function updateCartUI() {
       const totalItems = cart.reduce((acc, item) => acc + item.cantidad, 0);
-      const totalPrice = cart.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
+      const T = calcTotals();
 
       document.getElementById('cart-count').textContent = totalItems;
-      document.getElementById('cart-total').textContent = `$${totalPrice.toLocaleString('es-AR')} ARS`;
+      document.getElementById('cart-total').textContent = money(T.total) + ' ARS';
+      document.getElementById('cart-breakdown').innerHTML = T.html;
 
       const container = document.getElementById('cart-items-container');
       if (cart.length === 0) {
@@ -792,7 +937,7 @@
           <div class="flex-1 min-w-0">
             <h4 class="font-bold text-xs truncate">${item.nombre}</h4>
             <p class="text-[11px] theme-muted">Talle: <b>${item.talle}</b> | Color: <b>${item.color}</b></p>
-            <p class="font-extrabold text-xs mt-0.5">$${(item.precio * item.cantidad).toLocaleString('es-AR')}</p>
+            <p class="font-extrabold text-xs mt-0.5">$${(unitPrice(item) * item.cantidad).toLocaleString('es-AR')}</p>
           </div>
           <div class="flex items-center gap-1.5">
             <button onclick="changeQty('${item.key}', -1)" class="w-6 h-6 rounded-md border theme-border font-bold text-xs">-</button>
@@ -855,7 +1000,7 @@
       const delivery = document.getElementById('delivery-method').value;
       const address = document.getElementById('buyer-address').value.trim();
       const payment = document.getElementById('buyer-payment').value;
-      const total = cart.reduce((acc, i) => acc + (i.precio * i.cantidad), 0);
+      const T = calcTotals(); const total = T.total;
 
       let lines = [
         `¡Hola *${STORE_CONFIG.nombre}*! 👋 Quiero realizar el siguiente pedido desde el Catálogo Web:`,
@@ -864,10 +1009,11 @@
 
       cart.forEach(item => {
         lines.push(`▪️ *${item.cantidad}x ${item.nombre}*`);
-        lines.push(`   Talle: ${item.talle} | Color: ${item.color} ($${(item.precio * item.cantidad).toLocaleString('es-AR')})`);
+        lines.push(`   Talle: ${item.talle} | Color: ${item.color} ($${(unitPrice(item) * item.cantidad).toLocaleString('es-AR')})`);
       });
 
       lines.push(``);
+      if (T.envio > 0) lines.push(`📦 *Envío:* ${money(T.envio)}`);
       lines.push(`💰 *TOTAL ESTIMADO: $${total.toLocaleString('es-AR')} ARS*`);
       lines.push(`👤 *Cliente:* ${name}`);
       lines.push(`🚚 *Entrega:* ${delivery}`);
